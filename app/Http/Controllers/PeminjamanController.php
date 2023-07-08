@@ -7,26 +7,39 @@ use App\Models\Barang;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Dompdf\Dompdf;
+use Illuminate\Support\Facades\View;
+use PDF;
+
 
 class PeminjamanController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Mendapatkan ID pengguna yang terautentikasi
         $userId = Auth::id();
 
+        // Ambil status dari input form
+        $status = $request->input('status');
+
         // Mengambil data peminjaman sesuai dengan user_id yang sedang login
-        $peminjamans = Peminjaman::select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'unit.nama AS nama_unit')
+        $query = Peminjaman::select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'unit.nama AS nama_unit')
             ->join('barang', 'peminjaman.barang_id', '=', 'barang.id')
             ->join('unit', 'barang.unit_id', '=', 'unit.id')
-            ->where('peminjaman.user_id', $userId)
-            ->get();
+            ->where('peminjaman.user_id', $userId);
+
+        if ($status) {
+            $query->where('status_pinjam', $status);
+        }
+
+        // Ambil data peminjaman sesuai query
+        $peminjamans = $query->get();
 
         // Tampilkan halaman daftar peminjaman dengan data yang telah diambil
-        return view('pinjam.index', compact('peminjamans'));
+        return view('pinjam.index', compact('peminjamans', 'status'));
     }
 
     /**
@@ -95,5 +108,37 @@ class PeminjamanController extends Controller
     public function destroy(Peminjaman $peminjaman)
     {
         //
+    }
+
+    public function cetak($id)
+    {
+        $peminjaman = Peminjaman::findOrFail($id);
+
+        return view('pinjam.cetak', compact('peminjaman'));
+    }
+
+    
+    public function print(Request $request)
+    {
+        $selectedPeminjaman = $request->input('selected_peminjaman');
+
+        // Query untuk mengambil data peminjaman yang dipilih
+        $peminjamans = Peminjaman::whereIn('peminjaman.id', explode(',', $selectedPeminjaman))
+                    ->select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'unit.nama AS nama_unit')
+                    ->join('barang', 'peminjaman.barang_id', '=', 'barang.id')
+                    ->join('unit', 'barang.unit_id', '=', 'unit.id')
+                    ->get();
+
+        // Mendapatkan nama pengguna yang sedang login
+        $userName = Auth::user()->name;
+
+        // Generate PDF
+        $pdf = PDF::loadView('pinjam.bukti', compact('peminjamans', 'userName'));
+
+        // Kode untuk mengatur nama file PDF yang dihasilkan
+        $filename = 'bukti_peminjaman_' . date('YmdHis') . '.pdf';
+
+        // Mengirimkan file PDF untuk di-download oleh pengguna
+        return $pdf->download($filename);
     }
 }

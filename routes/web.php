@@ -39,6 +39,10 @@ Route::post('/pinjam', [PeminjamanController::class, 'store'])->name('pinjam.sto
 Route::get('/pinjam/{barang}', [PeminjamanController::class, 'create'])->name('pinjam.create');
 Route::get('/pinjam/{id}', 'App\Http\Controllers\PeminjamanController@show')->name('pinjam.show');
 Route::get('/pinjam', [PeminjamanController::class, 'index'])->name('pinjam.index');
+Route::get('/pinjam/{id}/cetak', [PeminjamanController::class, 'cetak'])->name('pinjam.cetak');
+Route::post('/pinjam/print', [PeminjamanController::class, 'print'])->name('pinjam.print');
+
+
 
 
 Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
