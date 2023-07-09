@@ -1,75 +1,87 @@
 <!-- resources/views/peminjaman/index.blade.php -->
-@extends('layouts.app')
+@extends('layouts.master')
 
 @section('content')
 <!-- resources/views/units/index.blade.php -->
+<section class="hero-wrap hero-wrap-2 js-fullheight" style="background-image: url('images/bg_3.jpg');" data-stellar-background-ratio="0.5">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row no-gutters slider-text js-fullheight align-items-end justify-content-start">
+      <div class="col-md-9 ftco-animate pb-5">
+        <p class="breadcrumbs"><span class="mr-2"><a href="{{ route('home') }}">Home <i class="ion-ios-arrow-forward"></i></a></span> <span>Data Peminjaman <i class="ion-ios-arrow-forward"></i></span></p>
+        <h1 class="mb-3 bread">Data Peminjaman</h1>
+      </div>
+    </div>
+  </div>
+</section>
 
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <h1>Daftar Peminjaman</h1>
-            <div class="card">
-                <div class="card-body">
-                    <form action="{{ route('pinjam.index') }}" method="GET" class="row g-3">
-                      <div class="col-auto">
-                        <label for="staticEmail2" class="visually-hidden">Email</label>
-                        <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Status Peminjaman:">
-                      </div>
-                      <div class="col-auto">
-                        <label for="inputPassword2" class="visually-hidden">Password</label>
-                        <select name="status" id="status" class="form-control">
-                            <option value="">All</option>
-                            <option value="requested">Requested</option>
-                            <option value="approved">Approved</option>
-                            <option value="borrowed">Borrowed</option>
-                            <option value="returned">Returned</option>
-                        </select>
-                      </div>
-                      <div class="col-auto">
-                        <button type="submit" class="btn btn-primary mb-3">Filter</button>
-                      </div>
-                    </form>
-                    <table width="100%" cellpadding="10">
-                        <thead>
-                            <tr>
-                                <th>Nama Barang</th>
-                                <th>Unit</th>
-                                <th>Tanggal Reservasi</th>
-                                <th>Tanggal Pinjam</th>
-                                <th>Tanggal Kembali</th>
-                                <th>Status</th>
-                                <!-- Informasi-informasi peminjaman lainnya -->
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach ($peminjamans as $peminjaman)
-                                <tr>
-                                    <td>{{ $peminjaman->nama_barang }}</td>
-                                    <td>{{ $peminjaman->nama_unit }}</td>
-                                    <td>{{ $peminjaman->tgl_reservasi }}</td>
-                                    <td>{{ $peminjaman->tgl_pinjam }}</td>
-                                    <td>{{ $peminjaman->tgl_kembali }}</td>
-                                    <td>{{ $peminjaman->status_pinjam }}</td>
-                                    <td>
-                                        <input type="checkbox" name="selected_peminjaman[]" value="{{ $peminjaman->id }}">
-                                    </td>
-                                    
-                                    <!-- Informasi-informasi peminjaman lainnya -->
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <form id="print-form" action="{{ route('pinjam.print') }}" method="POST" style="display: none;">
-                        @csrf
-                        <input type="hidden" name="selected_peminjaman" id="selected_peminjaman_input">
-                    </form>
 
-                    <button type="button" id="print-button" class="btn btn-primary">Cetak Bukti</button>
+<section class="ftco-section bg-light">
+    <div class="container">
+        <div class="container">
+            <div class="col-md-4">
+                <div class="row no-gutters">
+                    <div class="">
+                        <div class="row no-gutters">
+                            <div class="d-flex align-items-center">
+                                <form action="{{ route('pinjam.index') }}" method="GET" class="request-form ftco-animate bg-primary row g-3">
+                                    @csrf
+                                    <div class="col-auto">
+                                        <label for="nama_barang" class="label">Status Peminjaman</label>
+                                        <select name="status" id="status" class="form-control" style="color: black;">
+                                            <option value="" style="color: black;">All</option>
+                                            <option value="requested" style="color: black;">Requested</option>
+                                            <option value="approved" style="color: black;">Approved</option>
+                                            <option value="borrowed" style="color: black;">Borrowed</option>
+                                            <option value="returned" style="color: black;">Returned</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-auto" style="margin-top: 10px;">
+                                      <input type="submit" value="Filter" class="btn btn-secondary py-3 px-4">
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <div style="margin-bottom: 20px;"></div>
+        @if ($peminjamans->isEmpty())
+            <p>Anda belum memiliki peminjaman.</p>
+        @else
+        <div class="row">
+            @foreach ($peminjamans as $peminjaman)
+            <div class="col-md-4">
+                <div class="car-wrap rounded ftco-animate">
+                    <div class="text">
+                        <div class="d-flex mb-3">
+                            <h2 class="mb-0"><a href="car-single.html">{{ $peminjaman->nama_barang }}</a><span></span></h2>
+                            <p class="price ml-auto"> <span><input type="checkbox" name="selected_peminjaman[]" value="{{ $peminjaman->id }}"></span></p>
+                        </div>
+                        <div class="d-flex">
+                            <p style="color: gray; font-size: 14px"><span>{{ $peminjaman->nama_unit }}</span></p>
+                            <p class="price ml-auto">{{ $peminjaman->status_pinjam }}</p>
+                        </div>
+                        <div>
+                            <p style="color: gray; font-size: 14px"><span>Tanggal Pinjam: {{ $peminjaman->tgl_pinjam }}</span></p>
+                            <p style="color: gray; font-size: 14px"><span>Tanggal Kembali: {{ $peminjaman->tgl_kembali }}</span></p>
+                            <p class="price ml-auto" style="color: gray; font-size: 14px"><span>{{ $peminjaman->tgl_reservasi }}</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        @endif 
+        <form id="print-form" action="{{ route('pinjam.print') }}" method="POST" style="display: none;">
+            @csrf
+            <input type="hidden" name="selected_peminjaman" id="selected_peminjaman_input">
+        </form>
+
+        <button type="button" id="print-button" class="btn btn-primary">Cetak Bukti Peminjaman</button>
     </div>
-</div>
+</section>
 
 <script>
     document.getElementById('print-button').addEventListener('click', function() {

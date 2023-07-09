@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\HomeController;
+
 
 
 
@@ -44,9 +46,18 @@ Route::post('/pinjam/print', [PeminjamanController::class, 'print'])->name('pinj
 
 
 
+Route::post('/search', [HomeController::class, 'searchBarang'])->name('search');
+
+
 
 Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
 Route::put('/profile/update', [UsersController::class, 'update'])->name('profile.update');
+// Route::get('/profile/pwd', [UsersController::class, 'pwd'])->name('profile.pwd');
+
+
+Route::group(['middleware' => 'web'], function () {
+    // Rute-rute yang terkait dengan form peminjaman
+});
 
 
 // Route::get('/pinjam/tambah', 'App\Http\Controllers\RequestpeminjamanController@tambah');

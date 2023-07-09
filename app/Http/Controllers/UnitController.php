@@ -55,7 +55,7 @@ class UnitController extends Controller
      */
     public function show(Unit $unit)
     {
-        $barang = $unit->barang()->where('status_barang', 'available')->get();
+        $barang = $unit->barang()->get();
 
 
         return view('units.show', compact('unit', 'barang'));

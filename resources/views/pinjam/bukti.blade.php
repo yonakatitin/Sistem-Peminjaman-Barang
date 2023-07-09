@@ -46,47 +46,40 @@
     </div>
 
     <div class="content">
-        <table width="50%" cellpadding="10">
-            @foreach ($peminjamans as $peminjaman)
-                @php
-                    $index = $loop->iteration;
-                @endphp
+        <table width="100%" cellpadding="10">
+            <thead>
                 <tr>
-                    <td>{{ $index }}</td>
+                    <th>No.</th>
+                    <th>Nama Barang</th>
+                    <th>Serial Number</th>
+                    <th>Unit</th>
+                    <th>Tanggal Reservasi</th>
+                    <th>Tanggal Pinjam</th>
+                    <th>Tanggal Kembali</th>
+                    <th>Status</th>
+                    <!-- Informasi-informasi peminjaman lainnya -->
                 </tr>
-                <tr>
-                    <td><b>Nama Barang</b></td>
-                    <td>: {{ $peminjaman->nama_barang }}</td>
-                </tr>
-                <tr>
-                    <td><b>Nama Unit</b></td>
-                    <td>: {{ $peminjaman->nama_unit }}</td>
-                </tr>
-                <tr>
-                    <td><b>Tanggal Reservasi</b></td>
-                    <td>: {{ $peminjaman->tgl_reservasi }}</td>
-                </tr>
-                <tr>
-                    <td><b>Tanggal Pinjam</b></td>
-                    <td>: {{ $peminjaman->tgl_pinjam }}</td>
-                </tr>
-                <tr>
-                    <td><b>Tanggal Kembali</b></td>
-                    <td>: {{ $peminjaman->tgl_kembali }}</td>
-                </tr>
-                <tr>
-                    <td><b>Status Pinjam</b></td>
-                    <td>: {{ $peminjaman->status_pinjam }}</td>
-                </tr>  
-                <tr>
-                    <td></td>
-                </tr>
-            @endforeach
+            </thead>
+            <tbody>
+                @foreach ($peminjamans as $peminjaman)
+                    @php
+                        $index = $loop->iteration;
+                    @endphp
+                    <tr>
+                        <td>{{ $index }}</td>
+                        <td>{{ $peminjaman->nama_barang }}</td>
+                        <td>{{ $peminjaman->serial_number }}</td>
+                        <td>{{ $peminjaman->nama_unit }}</td>
+                        <td>{{ $peminjaman->tgl_reservasi }}</td>
+                        <td>{{ $peminjaman->tgl_pinjam }}</td>
+                        <td>{{ $peminjaman->tgl_kembali }}</td>
+                        <td>{{ $peminjaman->status_pinjam }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
         </table>
-
-
     <div class="footer">
-        &copy; {{ date('Y') }} Nama Aplikasi Peminjaman Barang
+        &copy; {{ date('Y') }} Pinjam Barang UNS
     </div>
 </body>
 </html>

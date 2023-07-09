@@ -16,7 +16,8 @@ class Detailbarang extends Model
         'gambar',
     ];
 
-    public function barang(){
-        return $this->belongsTo('App\Models\Barang');
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class);
     }
 }

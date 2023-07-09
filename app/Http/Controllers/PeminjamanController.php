@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Dompdf\Dompdf;
 use Illuminate\Support\Facades\View;
 use PDF;
+use Illuminate\Validation\Rule;
 
 
 class PeminjamanController extends Controller
@@ -57,6 +58,32 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+            'barang_id' => 'required',
+            'tgl_pinjam' => 'required|date',
+            'tgl_kembali' => 'required|date|after_or_equal:tgl_pinjam',
+        ]);
+
+        $tanggalPinjam = Carbon::parse($request->tgl_pinjam);
+        $tanggalKembali = Carbon::parse($request->tgl_kembali);
+
+        // Validasi bahwa barang tidak sedang dipinjam oleh pengguna lain dalam rentang tanggal yang sama
+        $barangId = $request->barang_id;
+        $barangDipinjam = Peminjaman::where('barang_id', $barangId)
+            ->where(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                $query->whereBetween('tgl_pinjam', [$tanggalPinjam, $tanggalKembali])
+                    ->orWhereBetween('tgl_kembali', [$tanggalPinjam, $tanggalKembali])
+                    ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_pinjam', '<=', $tanggalPinjam)
+                            ->where('tgl_kembali', '>=', $tanggalKembali);
+                    });
+            })
+            ->exists();
+
+        if ($barangDipinjam) {
+            return back()->with('error', 'Barang sedang dipinjam dalam rentang tanggal yang sama.');
+        }
+
         $userId = Auth::id();
 
         $peminjaman = new Peminjaman();
@@ -124,7 +151,7 @@ class PeminjamanController extends Controller
 
         // Query untuk mengambil data peminjaman yang dipilih
         $peminjamans = Peminjaman::whereIn('peminjaman.id', explode(',', $selectedPeminjaman))
-                    ->select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'unit.nama AS nama_unit')
+                    ->select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'barang.serial_number AS serial_number', 'unit.nama AS nama_unit')
                     ->join('barang', 'peminjaman.barang_id', '=', 'barang.id')
                     ->join('unit', 'barang.unit_id', '=', 'unit.id')
                     ->get();

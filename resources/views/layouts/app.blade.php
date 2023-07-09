@@ -54,6 +54,9 @@
                                 <a class="nav-link" href="{{ route('home') }}">Home</a>
                             </li>
                             <li class="nav-item">
+                                <a class="nav-link" href="{{ route('units.index') }}">Unit</a>
+                            </li>
+                            <li class="nav-item">
                                 <a class="nav-link" href="{{ route('pinjam.index') }}">Data Peminjaman</a>
                             </li>
                             <li class="nav-item dropdown">

@@ -22,18 +22,20 @@ class Barang extends Model
 
     public function unit()
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        return $this->belongsTo(Unit::class);
     }
 
     public function kategori(){
         return $this->belongsTo('App\Models\Kategori');
     }
 
-    public function detailbarang(){
-        return $this->hasOne('App\Models\Detailbarang');
+    public function detailBarang()
+    {
+        return $this->hasOne(Detailbarang::class);
     }
 
-    public function peminjaman(){
-        return $this->hasOne('App\Models\Peminjaman');
+    public function peminjamans()
+    {
+        return $this->hasMany(Peminjaman::class);
     }
 }
