@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('administrator', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user');
-            $table->foreign('id_user')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

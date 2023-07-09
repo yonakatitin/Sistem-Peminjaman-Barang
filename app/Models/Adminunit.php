@@ -11,8 +11,8 @@ class Adminunit extends Model
     protected $table = 'adminunit';
 
     protected $fillable = [
-        'id_user',
-        'id_unit',
+        'user_id',
+        'unit_id',
     ];
 
     public function unit(){

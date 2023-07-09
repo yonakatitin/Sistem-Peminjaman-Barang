@@ -11,12 +11,19 @@ class UnitController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function admin_index()
     {
         $unit = Unit::all();
 
         return view('admin.unit.index',['unit' => $unit]);
         //
+    }
+
+    public function index()
+    {
+        $units = Unit::all();
+
+        return view('units.index', compact('units'));
     }
 
     /**
@@ -53,9 +60,11 @@ class UnitController extends Controller
      */
     public function show(Unit $unit)
     {
-        //
-    }
+        $barang = $unit->barang()->get();
 
+
+        return view('units.show', compact('unit', 'barang'));
+    }
     /**
      * Show the form for editing the specified resource.
      */

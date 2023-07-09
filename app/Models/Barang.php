@@ -11,8 +11,8 @@ class Barang extends Model
     protected $table = 'barang';
 
     protected $fillable = [
-        'id_unit',
-        'id_kategori',
+        'unit_id',
+        'kategori_id',
         'nama_barang',
         'merk',
         'serial_number',
@@ -32,7 +32,7 @@ class Barang extends Model
         return $this->hasOne('App\Models\Detailbarang');
     }
 
-    public function peminjaman(){
-        return $this->hasOne('App\Models\Peminjaman');
+    public function peminjamans(){
+        return $this->hasMany('App\Models\Peminjaman');
     }
 }

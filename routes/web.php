@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PeminjamanController;
 use App\Models\Barang;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -38,12 +40,32 @@ Route::post('forget-password', 'App\Http\Controllers\Auth\ForgotPasswordControll
 Route::get('reset-password/{token}', 'App\Http\Controllers\Auth\ForgotPasswordController@showResetPasswordForm')->name('reset.password.get');
 Route::post('reset-password', 'App\Http\Controllers\Auth\ForgotPasswordController@submitResetPasswordForm')->name('reset.password.post');
 
+Route::group(['middleware' => 'web'], function () {
+    // Rute-rute yang terkait dengan form peminjaman
+});
+
 // auth
 Auth::routes();
 
 Route::middleware(['auth', 'user-access:user'])->group(function () {
   
     Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+    Route::get('/units', 'App\Http\Controllers\UnitController@index')->name('units.index');
+    Route::get('/units/{unit}', 'App\Http\Controllers\UnitController@show')->name('units.show');
+    Route::get('/barang/{detailbarang}', 'App\Http\Controllers\BarangController@show')->name('barang.show');
+
+    Route::post('/pinjam', [PeminjamanController::class, 'store'])->name('pinjam.store');
+    Route::get('/pinjam/{barang}', [PeminjamanController::class, 'create'])->name('pinjam.create');
+    Route::get('/pinjam/{id}', 'App\Http\Controllers\PeminjamanController@show')->name('pinjam.show');
+    Route::get('/pinjam', [PeminjamanController::class, 'index'])->name('pinjam.index');
+    Route::get('/pinjam/{id}/cetak', [PeminjamanController::class, 'cetak'])->name('pinjam.cetak');
+    Route::post('/pinjam/print', [PeminjamanController::class, 'print'])->name('pinjam.print');
+
+    Route::post('/search', [HomeController::class, 'searchBarang'])->name('search');
+
+    Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [UsersController::class, 'update'])->name('profile.update');
 });
 
 Route::middleware(['auth', 'user-access:adminunit'])->group(function () {
@@ -54,9 +76,7 @@ Route::middleware(['auth', 'user-access:adminunit'])->group(function () {
     Route::get('adminunit/dashboard', [App\Http\Controllers\HomeController::class, 'adminunitHome'])->name('adminunit.dashboard');
 
         // barang
-        Route::resource('adminunit/barang', 'App\Http\Controllers\BarangController')->names([
-            'index' => 'adminunit.barang',
-        ]);
+        Route::get('adminunit/barang', 'App\Http\Controllers\BarangController@index')->name('adminunit.barang');
         Route::get('adminunit/barang/edit/{id_barang}', 'App\Http\Controllers\BarangController@edit')->name('adminunit.barang.edit');
         Route::post('/adminunit/barang/update', 'App\Http\Controllers\BarangController@update')->name('adminunit.barang.update');
         Route::get('adminunit/barang/create', 'App\Http\Controllers\BarangController@create')->name('adminunit.barang.create');
@@ -68,18 +88,16 @@ Route::middleware(['auth', 'user-access:adminunit'])->group(function () {
             'index' => 'adminunit.reqpeminjaman',
         ]);
         Route::get('adminunit/reqpeminjaman/approve/{id_reqpeminjaman}', 'App\Http\Controllers\PeminjamanController@approve')->name('adminunit.reqpeminjaman.approve');
-        Route::get('adminunit/reqpeminjaman/create', 'App\Http\Controllers\PeminjamanController@create')->name('adminunit.reqpeminjaman.create');
+        Route::get('adminunit/reqpeminjaman/create', 'App\Http\Controllers\PeminjamanController@admin_create')->name('adminunit.reqpeminjaman.create');
         Route::get('adminunit/reqpeminjaman/decline/{id_reqpeminjaman}','App\Http\Controllers\PeminjamanController@decline')->name('adminunit.reqpeminjaman.decline');
-        Route::post('adminunit/reqpeminjaman/store','App\Http\Controllers\PeminjamanController@store')->name('adminunit.reqpeminjaman.store');
+        Route::post('adminunit/reqpeminjaman/store','App\Http\Controllers\PeminjamanController@admin_store')->name('adminunit.reqpeminjaman.store');
 
         // peminjaman
-        Route::resource('adminunit/peminjaman', 'App\Http\Controllers\PeminjamanController')->names([
-            'index' => 'adminunit.peminjaman',
-        ]);
-        Route::get('adminunit/peminjaman/create', 'App\Http\Controllers\PeminjamanController@create')->name('adminunit.peminjaman.create');
+        Route::get('adminunit/peminjaman', 'App\Http\Controllers\PeminjamanController@admin_index')->name('adminunit.peminjaman');
+        // Route::get('adminunit/peminjaman/create', 'App\Http\Controllers\PeminjamanController@create')->name('adminunit.peminjaman.create');
         Route::get('adminunit/peminjaman/returned/{id_peminjaman}','App\Http\Controllers\PeminjamanController@returned')->name('adminunit.peminjaman.returned');
         Route::get('adminunit/peminjaman/borrowed/{id_peminjaman}','App\Http\Controllers\PeminjamanController@borrowed')->name('adminunit.peminjaman.borrowed');
-        Route::post('adminunit/peminjaman/store','App\Http\Controllers\PeminjamanController@store')->name('adminunit.peminjaman.store');
+        // Route::post('adminunit/peminjaman/store','App\Http\Controllers\PeminjamanController@store')->name('adminunit.peminjaman.store');
 
         // profile
         Route::get('adminunit/profile', 'App\Http\Controllers\AdminunitController@show_profile')->name('adminunit.profile');
@@ -101,9 +119,7 @@ Route::middleware(['auth', 'user-access:administrator'])->group(function () {
     Route::get('admin/dashboard', [App\Http\Controllers\HomeController::class, 'administratorHome'])->name('admin.dashboard');
 
     // unit
-    Route::resource('admin/unit', 'App\Http\Controllers\UnitController')->names([
-        'index' => 'admin.unit',
-    ]);
+    Route::get('admin/unit', 'App\Http\Controllers\UnitController@admin_index')->name('admin.unit');
     Route::get('admin/unit/edit/{id}', 'App\Http\Controllers\UnitController@edit')->name('admin.unit.edit');
     Route::post('admin/unit/update', 'App\Http\Controllers\UnitController@update')->name('admin.unit.update');
     Route::get('admin/unit/create', 'App\Http\Controllers\UnitController@create')->name('admin.unit.create');
@@ -124,8 +140,8 @@ Route::middleware(['auth', 'user-access:administrator'])->group(function () {
     Route::resource('admin/user', 'App\Http\Controllers\UserController')->names([
         'index' => 'admin.user',
     ]);
-    Route::get('admin/user/edit/{id}', 'App\Http\Controllers\UserController@edit')->name('admin.user.edit');
-    Route::post('admin/user/update', 'App\Http\Controllers\UserController@update')->name('admin.user.update');
+    Route::get('admin/user/edit/{id}', 'App\Http\Controllers\UserController@admin_edit')->name('admin.user.edit');
+    Route::post('admin/user/update', 'App\Http\Controllers\UserController@admin_update')->name('admin.user.update');
     Route::get('admin/user/create', 'App\Http\Controllers\UserController@create')->name('admin.user.create');
     Route::get('admin/user/hapus/{id}','App\Http\Controllers\UserController@hapus')->name('admin.user.hapus');
     Route::post('admin/user/store','App\Http\Controllers\UserController@store')->name('admin.user.store');

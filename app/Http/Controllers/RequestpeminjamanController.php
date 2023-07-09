@@ -13,37 +13,37 @@ class RequestpeminjamanController extends Controller
      * Display a listing of the resource.
      */
 
-     private $id_unit;
+     private $unit_id;
 
      public function __construct()
      {
          if (auth()->check()) {
              echo '<script>console.log(authenticated!)</script>';
              $usr = auth()->user();
-             $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-             $this->id_unit = $id_unit->id_unit;
+             $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+             $this->unit_id = $unit_id->unit_id;
          }
      }
 
     public function index()
     {
              $usr = auth()->user();
-             $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-             $id_unit = $id_unit->id_unit;
+             $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+             $unit_id = $unit_id->unit_id;
              $where1 = [
-                'barang.id_unit' => $id_unit,
+                'barang.unit_id' => $unit_id,
                 'peminjaman.status_pinjam' => 'requested'
             ];
             
             $where2 = [
-                'barang.id_unit' => $id_unit,
+                'barang.unit_id' => $unit_id,
                 'peminjaman.status_pinjam' => 'declined'
             ];
             
             $list_req = DB::table('peminjaman')
-                ->join('users', 'peminjaman.id_user', '=', 'users.id')
-                ->join('barang', 'barang.id', '=', 'peminjaman.id_barang')
-                ->leftJoin('detailbarang', 'detailbarang.id_barang', '=', 'barang.id')
+                ->join('users', 'peminjaman.user_id', '=', 'users.id')
+                ->join('barang', 'barang.id', '=', 'peminjaman.barang_id')
+                ->leftJoin('detailbarang', 'detailbarang.barang_id', '=', 'barang.id')
                 ->where(function ($query) use ($where1, $where2) {
                     $query->where($where1)
                         ->orWhere(function ($query) use ($where2) {
@@ -53,7 +53,7 @@ class RequestpeminjamanController extends Controller
                 ->select('peminjaman.*', 'users.name', 'users.email', 'users.no_hp', 'barang.nama_barang', 'barang.merk', 'barang.serial_number', 'detailbarang.gambar')
                 ->get();
             
-        return view('adminunit.reqpeminjaman.index', ['reqpeminjaman' => $list_req, 'id_unit' => $id_unit]);
+        return view('adminunit.reqpeminjaman.index', ['reqpeminjaman' => $list_req, 'unit_id' => $unit_id]);
         //
     }
 
@@ -63,12 +63,12 @@ class RequestpeminjamanController extends Controller
     public function create()
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
-        $whereClause = ['status_barang'=> 1, 'id_unit' => $id_unit];
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
+        $whereClause = ['status_barang'=> 1, 'unit_id' => $unit_id];
         $barang = DB::table('barang')->where($whereClause)->get();
         $users = DB::table('users')->where('role', 1)->get();
-        return view('adminunit.reqpeminjaman.create', ['barang' => $barang, 'users' => $users, 'id_unit' => $id_unit]);
+        return view('adminunit.reqpeminjaman.create', ['barang' => $barang, 'users' => $users, 'unit_id' => $unit_id]);
         //
     }
 
@@ -78,8 +78,8 @@ class RequestpeminjamanController extends Controller
     public function store(Request $req)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
 
         $reservasi = strtotime(date('Y-m-d', strtotime($req->tgl_reservasi)));
         $pinjam = strtotime(date('Y-m-d', strtotime($req->tgl_pinjam)));
@@ -89,15 +89,15 @@ class RequestpeminjamanController extends Controller
             exit;
         }else{
             DB::table('requestpeminjaman')->insert([
-                'id_user' => $req->id_user,
-                'id_barang' => $req->id_barang,
+                'user_id' => $req->user_id,
+                'barang_id' => $req->barang_id,
                 'tgl_pinjam' => $req->tgl_pinjam,
                 'tgl_kembali' => $req->tgl_kembali,
                 'tgl_reservasi' => $req->tgl_reservasi,
                 'status_pinjam' => 'requested'
             ]);
 
-            DB::table('barang')->where('id', $req->id_barang)->update([
+            DB::table('barang')->where('id', $req->barang_id)->update([
                 'status_barang' => 2
             ]);
         }
@@ -125,8 +125,8 @@ class RequestpeminjamanController extends Controller
     public function approve($id_reqpeminjaman)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
 
         DB::table('requestpeminjaman')->where('id',$id_reqpeminjaman)->update([
             'status_pinjam' => 'approved'
@@ -135,8 +135,8 @@ class RequestpeminjamanController extends Controller
         $req = DB::table('requestpeminjaman')->where('id',$id_reqpeminjaman)->first();
 
         DB::table('peminjaman')->insert([
-            'id_user' => $req->id_user,
-            'id_barang' => $req->id_barang,
+            'user_id' => $req->user_id,
+            'barang_id' => $req->barang_id,
             'tgl_pinjam' => $req->tgl_pinjam,
             'tgl_kembali' => $req->tgl_kembali,
             'tgl_reservasi' => $req->tgl_reservasi,
@@ -150,8 +150,8 @@ class RequestpeminjamanController extends Controller
     public function decline($id_reqpeminjaman)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
 
         DB::table('requestpeminjaman')->where('id',$id_reqpeminjaman)->update([
             'status_pinjam' => 'declined'

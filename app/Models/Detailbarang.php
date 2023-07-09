@@ -11,7 +11,7 @@ class Detailbarang extends Model
     protected $table = 'detailbarang';
 
     protected $fillable = [
-        'id_barang',
+        'barang_id',
         'deskripsi',
         'gambar',
     ];

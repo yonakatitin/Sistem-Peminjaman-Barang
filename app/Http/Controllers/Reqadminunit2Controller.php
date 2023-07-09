@@ -16,7 +16,7 @@ class Reqadminunit2Controller extends Controller
      */
     public function index()
     {
-        $users = DB::table('reqadminunit')->join('unit', 'reqadminunit.id_unit', '=', 'unit.id')->select('reqadminunit.*', 'unit.nama')->get();
+        $users = DB::table('reqadminunit')->join('unit', 'reqadminunit.unit_id', '=', 'unit.id')->select('reqadminunit.*', 'unit.nama')->get();
         return view('admin.reqadminunit.index', ['users' => $users]);
         //
     }
@@ -26,7 +26,7 @@ class Reqadminunit2Controller extends Controller
      */
     public function create()
     {
-        $unit = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.id_unit')->whereNull('adminunit.id_unit')->select('unit.*')->get();;
+        $unit = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.unit_id')->whereNull('adminunit.unit_id')->select('unit.*')->get();;
         return view('admin.reqadminunit.create', ['unit' => $unit]);
         //
     }
@@ -42,7 +42,7 @@ class Reqadminunit2Controller extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'no_hp' => ['required', 'string', 'min:10', 'max:13', 'unique:users'],
             'alamat' => ['required', 'string', 'min:10', 'max:255'],
-            'id_unit' => ['required']
+            'unit_id' => ['required']
         ]);
 
         DB::table('reqadminunit')->insert([
@@ -51,7 +51,7 @@ class Reqadminunit2Controller extends Controller
             'password' => Hash::make($data['password']),
             'alamat' => $data['alamat'],
             'no_hp' => $data['no_hp'],
-            'id_unit' => $data['id_unit'],
+            'unit_id' => $data['unit_id'],
             'status' => 1,
         ]);    
 
@@ -120,11 +120,11 @@ class Reqadminunit2Controller extends Controller
             'role' => 2,
         ]);        
 
-        $id_user = DB::table('users')->where('email', $admin->email)->select('users.id')->first();
+        $user_id = DB::table('users')->where('email', $admin->email)->select('users.id')->first();
 
         DB::table('adminunit')->insert([
-            'id_unit' => $admin->id_unit,
-            'id_user' => $id_user->id,
+            'unit_id' => $admin->unit_id,
+            'user_id' => $user_id->id,
         ]);
 
         return redirect('admin/reqadminunit/sendemail/'. $id);

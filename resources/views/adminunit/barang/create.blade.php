@@ -23,7 +23,7 @@
         </div>
         <div class="card-body">
             <form action="{{ route('adminunit.barang.store') }}" method="post" enctype="multipart/form-data">
-                <input type="hidden" value="$id_unit">
+                <input type="hidden" value="$unit_id">
                 {{ csrf_field() }}
                 <div class="row mb-3">
                     <div class="col-md-6">

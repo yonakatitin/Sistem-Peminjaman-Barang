@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('detailbarang', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_barang');
-            $table->foreign('id_barang')->references('id')->on('barang')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('barang_id');
+            $table->foreign('barang_id')->references('id')->on('barang')->cascadeOnDelete()->cascadeOnUpdate();
             $table->text('detail')->nullable();
             $table->string('gambar', 100)->nullable();
             $table->timestamps();

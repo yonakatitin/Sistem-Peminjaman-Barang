@@ -33,10 +33,10 @@ class HomeController extends Controller
     public function adminunitHome()
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
         
-        $data = DB::table('barang')->where('id_unit', $id_unit)->select('barang.status_barang')->get(); // Retrieve data from the 'data' table
+        $data = DB::table('barang')->where('unit_id', $unit_id)->select('barang.status_barang')->get(); // Retrieve data from the 'data' table
         $jml_barang = count($data);
         $jml_barang = $jml_barang <= 0 ? '1' : $jml_barang;
 
@@ -61,7 +61,7 @@ class HomeController extends Controller
             'available' => round($available_p, 2),
         ];
 
-        $data = DB::table('peminjaman')->join('barang', 'peminjaman.id_barang', '=', 'barang.id')->where('barang.id_unit', $id_unit)->select('peminjaman.status_pinjam')->get(); // Retrieve data from the 'data' table
+        $data = DB::table('peminjaman')->join('barang', 'peminjaman.barang_id', '=', 'barang.id')->where('barang.unit_id', $unit_id)->select('peminjaman.status_pinjam')->get(); // Retrieve data from the 'data' table
 
         $requested = 0;
         $approved = 0;
@@ -166,4 +166,68 @@ class HomeController extends Controller
 
         return view('administratorHome', ['users' => $jumlah,'users_p' => $percentage, 'reqadminunit' => $reqadminunit_all]);
     }
+
+    public function searchBarang(Request $request)
+    {
+        $request->validate([
+            'nama_barang' => 'nullable|string',
+            'tgl_pinjam' => 'nullable|date',
+            'tgl_kembali' => 'nullable|date|after_or_equal:tgl_pinjam',
+        ]);
+
+        $namaBarang = $request->nama_barang;
+        $tanggalPinjam = $request->tgl_pinjam;
+        $tanggalKembali = $request->tgl_kembali;
+
+        $query = Barang::query();
+
+        if ($namaBarang) {
+            $query->where('nama_barang', 'like', '%' . $namaBarang . '%');
+        }
+
+        if ($tanggalPinjam && $tanggalKembali) {
+            $query->whereDoesntHave('peminjamans', function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                $query->where(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                    $query->where(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_pinjam', '>=', $tanggalPinjam)
+                            ->where('tgl_pinjam', '<=', $tanggalKembali);
+                    })
+                    ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_kembali', '>=', $tanggalPinjam)
+                            ->where('tgl_kembali', '<=', $tanggalKembali);
+                    })
+                    ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_pinjam', '<=', $tanggalPinjam)
+                            ->where('tgl_kembali', '>=', $tanggalKembali);
+                    });
+                })
+                ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                    $query->where(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_pinjam', '>=', $tanggalPinjam)
+                            ->where('tgl_pinjam', '<=', $tanggalKembali);
+                    })
+                    ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_kembali', '>=', $tanggalPinjam)
+                            ->where('tgl_kembali', '<=', $tanggalKembali);
+                    })
+                    ->orWhere(function ($query) use ($tanggalPinjam, $tanggalKembali) {
+                        $query->where('tgl_pinjam', '<=', $tanggalPinjam)
+                            ->where('tgl_kembali', '>=', $tanggalKembali);
+                    });
+                });
+            });
+        }
+
+        $barangs = $query->with('unit')->get();
+
+        return view('home', compact('barangs', 'namaBarang', 'tanggalPinjam', 'tanggalKembali'));
+    }
+
+    public function showBarangDetail($barangId)
+    {
+        $barang = Barang::with('detailbarang')->findOrFail($barangId);
+
+        return view('barang.detail', compact('barang'));
+    }
+
 }

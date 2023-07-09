@@ -20,8 +20,8 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('no_hp', 100);
             $table->enum('status',['requested','approved','declined']);
-            $table->foreignId('id_unit');
-            $table->foreign('id_unit')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('unit_id');
+            $table->foreign('unit_id')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
             /* Users: 0=>User, 1=>Admin Unit, 2=>Administrator */
             $table->rememberToken();
             $table->timestamps();

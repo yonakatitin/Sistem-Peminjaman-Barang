@@ -22,7 +22,7 @@
                 Edit Barang
             </div>
             <div class="card-body">
-                <form action="{{ route('adminunit.barang.update', ['id_unit' => $barang->id_unit]) }}" method="post" enctype="multipart/form-data">
+                <form action="{{ route('adminunit.barang.update', ['unit_id' => $barang->unit_id]) }}" method="post" enctype="multipart/form-data">
                     {{ csrf_field() }}
                     <input type="hidden" name="id_barang" value="{{ $barang->id }}">
                     @if(isset($barang->id_detail))
@@ -77,7 +77,7 @@
                             <div class="form-floating mb-3 mb-md-0">
                                 <select class="form-select @error('kategori') is-invalid @enderror" id="kategori" name="kategori">
                                     @foreach($kategori as $k)
-                                    @if($k->id == $barang->id_kategori)
+                                    @if($k->id == $barang->kategori_id)
                                     <option selected value="{{ $k->id }}">{{ $k->nama }}</option>
                                     @else
                                     <option value="{{ $k->id }}">{{ $k->nama }}</option>

@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('adminunit', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_user');
-            $table->foreignId('id_unit');
-            $table->foreign('id_user')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('id_unit')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('user_id');
+            $table->foreignId('unit_id');
+            $table->foreign('user_id')->references('id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('unit_id')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
         });
     }

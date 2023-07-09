@@ -50,7 +50,7 @@ class ReqadminunitController extends Controller
 
     public function index()
     {
-        $units = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.id_unit')->whereNull('adminunit.id_unit')->select('unit.*')->get();
+        $units = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.unit_id')->whereNull('adminunit.unit_id')->select('unit.*')->get();
         return view('auth.register-adminunit', compact('units'));
         //
     }
@@ -76,7 +76,7 @@ class ReqadminunitController extends Controller
     //         'password' => ['required', 'string', 'min:8', 'confirmed'],
     //         'no_hp' => ['required', 'string', 'min:10', 'max:13', 'unique:users'],
     //         'alamat' => ['required', 'string', 'min:10', 'max:13'],
-    //         'id_unit' => ['required']
+    //         'unit_id' => ['required']
     //     ]);
     // }
 
@@ -112,7 +112,7 @@ class ReqadminunitController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'no_hp' => ['required', 'string', 'min:10', 'max:13', 'unique:users'],
             'alamat' => ['required', 'string', 'min:10', 'max:255'],
-            'id_unit' => ['required']
+            'unit_id' => ['required']
         ]);
         
         DB::table('reqadminunit')->insert([
@@ -121,11 +121,11 @@ class ReqadminunitController extends Controller
             'password' => Hash::make($data['password']),
             'alamat' => $data['alamat'],
             'no_hp' => $data['no_hp'],
-            'id_unit' => $data['id_unit'],
+            'unit_id' => $data['unit_id'],
             'status' => 1
         ]);
 
-        $unit = DB::table('unit')->where('id', $data['id_unit'])->select('nama')->first();
+        $unit = DB::table('unit')->where('id', $data['unit_id'])->select('nama')->first();
 
         $data = [
             'name' => $data['name'],

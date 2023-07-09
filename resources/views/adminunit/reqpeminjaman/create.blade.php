@@ -23,7 +23,7 @@
             </div>
             <div class="card-body">
                 <form action="{{ route('adminunit.reqpeminjaman.store') }}" method="post" enctype="multipart/form-data">
-                    <input type="hidden" value="$id_unit">
+                    <input type="hidden" value="$unit_id">
                     <?php
                     $date = date("Y-m-d");
                     ?>
@@ -33,17 +33,17 @@
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
                                 <!-- <span>Nama Unit</span> -->
-                                <select class="form-select @error('id_user') is-invalid @enderror" id="id_user" name="id_user">
+                                <select class="form-select @error('user_id') is-invalid @enderror" id="user_id" name="user_id">
                                     @foreach($users as $r)
-                                    @if(old('id_user') && old('id_user' == $r->id))
+                                    @if(old('user_id') && old('user_id' == $r->id))
                                     <option selected value="{{ $r->id }}">{{ $r->name }}</option>
                                     @endif
                                     <option value="{{ $r->id }}">{{ $r->name }}</option>
                                     @endforeach
                                 </select>
-                                <label for="id_user">Pengguna</label>
+                                <label for="user_id">Pengguna</label>
 
-                                @error('id_user')
+                                @error('user_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>
@@ -53,18 +53,18 @@
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <!-- <span>Lokasi Unit</span> -->
-                                <select class="form-select @error('id_barang') is-invalid @enderror" id="id_barang" name="id_barang">
+                                <select class="form-select @error('barang_id') is-invalid @enderror" id="barang_id" name="barang_id">
                                     @foreach($barang as $r)
-                                    @if(old('id_barang') && old('id_barang') == $r->id)
+                                    @if(old('barang_id') && old('barang_id') == $r->id)
                                     <option selected value="{{ $r->id }}">{{ $r->nama_barang }}</option>
                                     @endif
                                     <option value="{{ $r->id }}">{{ $r->nama_barang }}</option>
                                     @endforeach
                                 </select>
-                                <label for="id_barang">Barang</label>
+                                <label for="barang_id">Barang</label>
 
 
-                                @error('id_barang')
+                                @error('barang_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

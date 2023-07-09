@@ -96,18 +96,18 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
-                                <select class="form-select @error('id_unit') is-invalid @enderror" id="id_unit" name="id_unit">
+                                <select class="form-select @error('unit_id') is-invalid @enderror" id="unit_id" name="unit_id">
                                     @foreach($unit as $k)
-                                    @if(old('id_unit') && $k->id == old('id_unit'))
+                                    @if(old('unit_id') && $k->id == old('unit_id'))
                                     <option selected value="{{ $k->id }}">{{ $k->nama }}</option>
                                     @else
                                     <option value="{{ $k->id }}">{{ $k->nama }}</option>
                                     @endif
                                     @endforeach
                                 </select>
-                                <label for="id_unit">Unit</label>
+                                <label for="unit_id">Unit</label>
 
-                                @error('id_unit')
+                                @error('unit_id')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
                                 </span>

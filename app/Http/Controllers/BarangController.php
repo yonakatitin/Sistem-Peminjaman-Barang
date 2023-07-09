@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Detailbarang;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -14,29 +15,29 @@ class BarangController extends Controller
      * Display a listing of the resource.
      */
 
-     private $id_unit;
+     private $unit_id;
 
      public function __construct()
      {
          if (auth()->check()) {
              echo '<script>console.log(authenticated!)</script>';
              $usr = auth()->user();
-             $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-             $this->id_unit = $id_unit->id_unit;
+             $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+             $this->unit_id = $unit_id->unit_id;
          }
      }
      
     
     public function index()
     {
-        // $id_unit = DB::table('adminunit')->where('id_user', $id)->select('adminunit.id_unit');
+        // $unit_id = DB::table('adminunit')->where('user_id', $id)->select('adminunit.unit_id');
         // $usr = auth()->user();
-        // $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        // $this->id_unit = $id_unit->id_unit;
+        // $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        // $this->unit_id = $unit_id->unit_id;
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $this->id_unit = $id_unit->id_unit;
-        $barang = DB::table('barang')->join('kategori', 'barang.id_kategori', '=', 'kategori.id')->leftJoin('detailbarang', 'detailbarang.id_barang', '=', 'barang.id')->where('barang.id_unit', $this->id_unit)->select('barang.*', 'kategori.nama', 'detailbarang.id as id_detail', 'detailbarang.detail', 'detailbarang.gambar')->get();
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $this->unit_id = $unit_id->unit_id;
+        $barang = DB::table('barang')->join('kategori', 'barang.kategori_id', '=', 'kategori.id')->leftJoin('detailbarang', 'detailbarang.barang_id', '=', 'barang.id')->where('barang.unit_id', $this->unit_id)->select('barang.*', 'kategori.nama', 'detailbarang.id as id_detail', 'detailbarang.detail', 'detailbarang.gambar')->get();
         return view('adminunit.barang.index', ['barang' => $barang]);
         //
     }
@@ -47,7 +48,7 @@ class BarangController extends Controller
     public function create()
     {
         $kategori = Kategori::all();
-        return view('adminunit.barang.create', ['kategori' => $kategori, 'id_unit' => $this->id_unit]);
+        return view('adminunit.barang.create', ['kategori' => $kategori, 'unit_id' => $this->unit_id]);
         //
     }
 
@@ -57,8 +58,8 @@ class BarangController extends Controller
     public function store(Request $request)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
         $validateData = $request->validate([
             'nama_barang' => 'required|max:255',
             'merk' => 'required|max:255',
@@ -81,13 +82,13 @@ class BarangController extends Controller
             'serial_number' => $validateData['serial_number'],
             'deskripsi' => $validateData['deskripsi'],
             'status_barang' => $validateData['status_barang'],
-            'id_unit' => $id_unit,
-            'id_kategori' => $validateData['kategori']
+            'unit_id' => $unit_id,
+            'kategori_id' => $validateData['kategori']
         ]);
 
-        $id_kategori = $request->kategori;
+        $kategori_id = $request->kategori;
 
-        $conditions = ['nama_barang' => $validateData['nama_barang'], 'serial_number' => $validateData['serial_number'], 'id_unit' => $id_unit, 'id_kategori' => $id_kategori];
+        $conditions = ['nama_barang' => $validateData['nama_barang'], 'serial_number' => $validateData['serial_number'], 'unit_id' => $unit_id, 'kategori_id' => $kategori_id];
 
         $data = DB::table('barang')->where($conditions)->first();
         // DB::enableQueryLog();
@@ -98,7 +99,7 @@ class BarangController extends Controller
         $id = $data->id;
 
         if($validateData['detail'] || $request->hasFile('gambar')){
-            $detail = ['id_barang' => $id];
+            $detail = ['barang_id' => $id];
 
             if (isset($gambar)) {
                 $detail['gambar'] = $gambar;
@@ -114,12 +115,12 @@ class BarangController extends Controller
         // elseif(!$validateData['detail'] && $validateData['gambar']){
         //     DB::table('detailbarang')->insert([
         //         'gambar' => $validateData['gambar'],
-        //         'id_barang' => $id
+        //         'barang_id' => $id
         //     ]);
         // }elseif($validateData['detail'] && !$validateData['gambar']){
         //     DB::table('detailbarang')->insert([
         //         'detail' => $validateData['detail'],
-        //         'id_barang' => $id
+        //         'barang_id' => $id
         //     ]);
         // }
         
@@ -130,23 +131,23 @@ class BarangController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Barang $barang)
+    public function show(Detailbarang $detailbarang)
     {
-        //
+        return view('barang.show', compact('detailbarang'));
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id_barang)
+    public function edit($barang_id)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $this->id_unit = $id_unit->id_unit;
-        $whereClause = ['barang.id_unit' => $this->id_unit, 'barang.id' => $id_barang];
-        $barang = DB::table('barang')->join('kategori', 'barang.id_kategori', '=', 'kategori.id')->leftJoin('detailbarang', 'barang.id', '=', 'detailbarang.id_barang')->where($whereClause)->select('barang.*', 'kategori.nama', 'detailbarang.id as id_detail', 'detailbarang.detail', 'detailbarang.gambar')->first();
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $this->unit_id = $unit_id->unit_id;
+        $whereClause = ['barang.unit_id' => $this->unit_id, 'barang.id' => $barang_id];
+        $barang = DB::table('barang')->join('kategori', 'barang.kategori_id', '=', 'kategori.id')->leftJoin('detailbarang', 'barang.id', '=', 'detailbarang.barang_id')->where($whereClause)->select('barang.*', 'kategori.nama', 'detailbarang.id as id_detail', 'detailbarang.detail', 'detailbarang.gambar')->first();
         $kategori = Kategori::all();
-        return view('adminunit.barang.edit', ['barang' => $barang, 'kategori' => $kategori, 'id_unit' => $this->id_unit]);
+        return view('adminunit.barang.edit', ['barang' => $barang, 'kategori' => $kategori, 'unit_id' => $this->unit_id]);
         //
     }
 
@@ -156,8 +157,8 @@ class BarangController extends Controller
     public function update(Request $request)
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
         
         // Validate the request data
         $validateData = $request->validate([
@@ -177,15 +178,15 @@ class BarangController extends Controller
     
         // Update the 'barang' table using the validated data
         DB::table('barang')
-            ->where('id', $request->id_barang)
+            ->where('id', $request->barang_id)
             ->update([
                 'nama_barang' => $validateData['nama_barang'],
                 'merk' => $validateData['merk'],
                 'serial_number' => $validateData['serial_number'],
                 'deskripsi' => $validateData['deskripsi'],
                 'status_barang' => $validateData['status_barang'],
-                'id_unit' => $id_unit,
-                'id_kategori' => $validateData['kategori']
+                'unit_id' => $unit_id,
+                'kategori_id' => $validateData['kategori']
             ]);
     
         // Update the 'detailbarang' table if 'id_detail' is available
@@ -207,6 +208,7 @@ class BarangController extends Controller
             }
         }else{
             $detail = [];
+            $detail['barang_id'] = $request->id_barang;
             if($validateData['detail']){
                 $detail['detail'] = $validateData['detail'];
             }
@@ -224,19 +226,19 @@ class BarangController extends Controller
         
         return redirect('/adminunit/barang');
     }
-    public function hapus($id_barang)
+    public function hapus($barang_id)
     {
-    DB::table('barang')->where('id',$id_barang)->delete();
+    DB::table('barang')->where('id',$barang_id)->delete();
     return redirect('/adminunit/barang');
     }
 
     public function getData()
     {
         $usr = auth()->user();
-        $id_unit = DB::table('adminunit')->where('adminunit.id_user', $usr->id)->select('adminunit.id_unit')->first();
-        $id_unit = $id_unit->id_unit;
+        $unit_id = DB::table('adminunit')->where('adminunit.user_id', $usr->id)->select('adminunit.unit_id')->first();
+        $unit_id = $unit_id->unit_id;
         
-        $data = DB::table('barang')->where('id_unit', $id_unit)->select('barang.status_barang')->get(); // Retrieve data from the 'data' table
+        $data = DB::table('barang')->where('unit_id', $unit_id)->select('barang.status_barang')->get(); // Retrieve data from the 'data' table
 
         $available = 0;
         $in_use = 0;

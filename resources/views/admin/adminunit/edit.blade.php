@@ -51,16 +51,16 @@
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating mb-3 mb-md-0">
-                                <select class="form-select" id="id_unit" name="id_unit">
+                                <select class="form-select" id="unit_id" name="unit_id">
                                     @foreach($unit as $k)
-                                    @if($k->id == $user->id_unit)
+                                    @if($k->id == $user->unit_id)
                                     <option selected value="{{ $k->id }}">{{ $k->nama }}</option>
                                     @else
                                     <option value="{{ $k->id }}">{{ $k->nama }}</option>
                                     @endif
                                     @endforeach
                                 </select>
-                                <label for="id_unit">Unit</label>
+                                <label for="unit_id">Unit</label>
                             </div>
                         </div>
                     </div>

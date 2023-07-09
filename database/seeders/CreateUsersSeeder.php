@@ -71,12 +71,12 @@ class CreateUsersSeeder extends Seeder
 
         $adminunit = [
             [
-                'id_user' => 1,
-                'id_unit' => 1
+                'user_id' => 1,
+                'unit_id' => 1
             ],
             [
-                'id_user' => 2,
-                'id_unit' => 2
+                'user_id' => 2,
+                'unit_id' => 2
             ]
         ];
 
@@ -85,7 +85,7 @@ class CreateUsersSeeder extends Seeder
         }
 
         $administrator = [
-                'id_user' => 3
+                'user_id' => 3
         ];
 
         DB::table('administrator')->insert($administrator);

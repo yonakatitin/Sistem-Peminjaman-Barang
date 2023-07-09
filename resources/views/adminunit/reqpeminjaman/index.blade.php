@@ -88,10 +88,10 @@
                             </td>
                             @endif
                             <!-- <td>
-                                <a href="/adminunit/{{ $id_unit }}/barang/edit/{{ $r->id }}" class="btn btn-primary">Edit</a>
+                                <a href="/adminunit/{{ $unit_id }}/barang/edit/{{ $r->id }}" class="btn btn-primary">Edit</a>
                             </td>
                             <td>
-                                <a href="/adminunit/{{ $id_unit }}/barang/hapus/{{ $r->id }}" class="btn btn-danger">Delete</a>
+                                <a href="/adminunit/{{ $unit_id }}/barang/hapus/{{ $r->id }}" class="btn btn-danger">Delete</a>
                             </td> -->
                         </tr>
                         <!-- Modal -->

@@ -12,7 +12,7 @@ class Requestpeminjaman extends Model
 
     protected $fillable = [
         'id_user',
-        'id_barang',
+        'barang_id',
         'tgl_pinjam',
         'tgl_kembali',
         'tgl_reservasi',

@@ -17,7 +17,7 @@ class AdminunitController extends Controller
      */
     public function index()
     {
-        $users = DB::table('users')->join('adminunit', 'users.id', '=', 'adminunit.id_user')->join('unit', 'unit.id', 'adminunit.id_unit')->select('users.*','unit.nama')->get();
+        $users = DB::table('users')->join('adminunit', 'users.id', '=', 'adminunit.user_id')->join('unit', 'unit.id', 'adminunit.unit_id')->select('users.*','unit.nama')->get();
         return view('admin.adminunit.index', ['users' => $users]);
         //
     }
@@ -27,7 +27,7 @@ class AdminunitController extends Controller
      */
     public function create()
     {
-        $unit = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.id_unit')->whereNull('adminunit.id_unit')->select('unit.*')->get();;
+        $unit = DB::table('unit')->leftJoin('adminunit', 'unit.id', '=', 'adminunit.unit_id')->whereNull('adminunit.unit_id')->select('unit.*')->get();;
         return view('admin.adminunit.create', ['unit' => $unit]);
         //
     }
@@ -43,7 +43,7 @@ class AdminunitController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'no_hp' => ['required', 'string', 'min:10', 'max:13', 'unique:users'],
             'alamat' => ['required', 'string', 'min:10', 'max:255'],
-            'id_unit' => ['required']
+            'unit_id' => ['required']
         ]);
 
         User::create([
@@ -55,13 +55,13 @@ class AdminunitController extends Controller
             'role' => 2,
         ]);        
 
-        $unit = DB::table('unit')->where('id', $data['id_unit'])->select('nama')->first();
+        $unit = DB::table('unit')->where('id', $data['unit_id'])->select('nama')->first();
 
-        $id_user = DB::table('users')->where('email', $data['email'])->select('users.id')->first();
+        $user_id = DB::table('users')->where('email', $data['email'])->select('users.id')->first();
 
         DB::table('adminunit')->insert([
-            'id_unit' => $data['id_unit'],
-            'id_user' => $id_user->id,
+            'unit_id' => $data['unit_id'],
+            'user_id' => $user_id->id,
         ]);
 
         $data = [
@@ -92,7 +92,7 @@ class AdminunitController extends Controller
      */
     public function edit($id)
     {   
-        $users = DB::table('users')->join('adminunit', 'users.id', '=', 'adminunit.id_user')->join('unit', 'unit.id', 'adminunit.id_unit')->where('users.id', $id)->select('users.*','unit.id as id_unit','unit.nama')->first();
+        $users = DB::table('users')->join('adminunit', 'users.id', '=', 'adminunit.user_id')->join('unit', 'unit.id', 'adminunit.unit_id')->where('users.id', $id)->select('users.*','unit.id as unit_id','unit.nama')->first();
         $unit = DB::table('unit')->get();
         return view('admin.adminunit.edit', ['user' => $users, 'unit' => $unit]);
         //
@@ -108,7 +108,7 @@ class AdminunitController extends Controller
             'email' => 'required|max:255',
             'no_hp' => 'required|max:255',
             'alamat' => 'required',
-            'id_unit' => 'required'
+            'unit_id' => 'required'
         ]);
 
         DB::table('users')->where('id', $request->id)->update([
@@ -118,8 +118,8 @@ class AdminunitController extends Controller
             'alamat' => $validateData['alamat']
         ]);
 
-        DB::table('adminunit')->where('id_user', $request->id)->update([
-            'id_unit' => $validateData['id_unit']
+        DB::table('adminunit')->where('user_id', $request->id)->update([
+            'unit_id' => $validateData['unit_id']
         ]);
 
         return redirect('/admin/adminunit');

@@ -23,7 +23,7 @@
             <div class="card-body">
                 <table id="datatablesSimple">
                     <div class="datatable-top d-flex justify-content-end">
-                        <a href="{{ route('admin.kategori.update') }}" class="btn btn-success btn-kategori">Tambah Kategori</a>
+                        <a href="{{ route('admin.kategori.create') }}" class="btn btn-success btn-kategori">Tambah Kategori</a>
                     </div>
                     <thead>
                         <tr>

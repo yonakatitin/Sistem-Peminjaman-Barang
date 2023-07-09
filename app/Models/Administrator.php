@@ -11,7 +11,7 @@ class Administrator extends Model
     protected $table = 'administrator';
 
     protected $fillable = [
-        'id_user',
+        'user_id',
         'id_admin_unit',
     ];
 

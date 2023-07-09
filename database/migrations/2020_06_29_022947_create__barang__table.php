@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('barang', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_unit');
-            $table->foreignId('id_kategori');
-            $table->foreign('id_unit')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
-            $table->foreign('id_kategori')->references('id')->on('kategori')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreignId('unit_id');
+            $table->foreignId('kategori_id');
+            $table->foreign('unit_id')->references('id')->on('unit')->cascadeOnDelete()->cascadeOnUpdate();
+            $table->foreign('kategori_id')->references('id')->on('kategori')->cascadeOnDelete()->cascadeOnUpdate();
             $table->string('nama_barang',100);
             $table->string('merk',100);
             $table->string('serial_number',100);

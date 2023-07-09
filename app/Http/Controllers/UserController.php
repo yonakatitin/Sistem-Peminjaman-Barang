@@ -104,7 +104,7 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit($id)
+    public function admin_edit($id)
     {
         $user = DB::table('users')->where('id', $id)->first();
         return view('admin.user.edit', ['user' => $user]);
@@ -114,7 +114,7 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request)
+    public function admin_update(Request $request)
     {
         $validateData = $request->validate([
             'name' => 'required|max:255',
