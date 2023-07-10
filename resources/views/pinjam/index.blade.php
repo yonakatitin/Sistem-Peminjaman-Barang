@@ -59,6 +59,9 @@
                             <h2 class="mb-0"><a href="car-single.html">{{ $peminjaman->nama_barang }}</a><span></span></h2>
                             <p class="price ml-auto"> <span><input type="checkbox" name="selected_peminjaman[]" value="{{ $peminjaman->id }}"></span></p>
                         </div>
+                        <div style="margin-top: -20px; margin-bottom: -5px;">
+                            <p style="color: gray; font-size: 12px"><span>{{ $peminjaman->serial_number }}</span></p>
+                        </div>
                         <div class="d-flex">
                             <p style="color: gray; font-size: 14px"><span>{{ $peminjaman->nama_unit }}</span></p>
                             <p class="price ml-auto">{{ $peminjaman->status_pinjam }}</p>

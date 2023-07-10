@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(AutoFill::class);
         $this->call(CreateUsersSeeder::class);
+        $this->call(CreateDetailbarangSeeder::class);
 
         // \App\Models\User::factory(10)->create();
 

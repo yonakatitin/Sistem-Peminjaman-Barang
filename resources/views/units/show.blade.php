@@ -25,7 +25,12 @@
             @foreach ($barang as $item)
             <div class="col-md-4">
                 <div class="car-wrap rounded ftco-animate">
-                    <div class="img rounded d-flex align-items-end" style="background-image: url('{{ asset("img/" . $item->detailbarang->gambar) }}');">
+                    @if ($item->detailbarang && $item->detailbarang->gambar)
+                        <div class="img rounded d-flex align-items-end" style="background-image: url('{{ asset("storage/" . $item->detailbarang->gambar) }}');">
+                    @else
+                        <div class="img rounded d-flex align-items-end" style="background-image: url('{{ asset("assets/barang/default.png") }}');">
+                    @endif
+                    
                     </div>
                     <div class="text">
                         @if ($item->detailbarang)
@@ -42,6 +47,8 @@
                         </div>
                         @if ($item->detailbarang)
                             <p class="d-flex mb-0 d-block"><a href="{{ route('barang.show', $item->detailbarang->id) }}" class="btn btn-secondary py-2 mr-1">Detail</a>
+                        @else
+                            <p class="d-flex mb-0 d-block"><a role="link" aria-disabled="true" disabled class="btn btn-secondary py-2 mr-1">Detail</a>
                         @endif
                         <a href="{{ route('pinjam.create', ['barang' => $item->id]) }}" class="btn btn-primary py-2 mr-1">Pinjam</a></p>
                     </div>

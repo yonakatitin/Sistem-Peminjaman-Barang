@@ -34,6 +34,10 @@
                                     <td>: {{ $barang->nama_barang }}</td>
                                 </tr>
                                 <tr>
+                                    <th>Serial Number</th>
+                                    <td>: {{ $barang->serial_number }}</td>
+                                </tr>
+                                <tr>
                                     <th>Merk</th>
                                     <td>: {{ $barang->merk }}</td>
                                 </tr>

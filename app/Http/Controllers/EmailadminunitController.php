@@ -12,7 +12,7 @@ class EmailadminunitController extends Controller
     
     public function index($id){
 
-        $user = DB::table('reqadminunit')->join('unit', 'reqadminunit.id_unit', 'unit.id')->where('reqadminunit.id', $id)->select('reqadminunit.email', 'reqadminunit.name', 'unit.nama as unit_name')->first();
+        $user = DB::table('reqadminunit')->join('unit', 'reqadminunit.unit_id', 'unit.id')->where('reqadminunit.id', $id)->select('reqadminunit.email', 'reqadminunit.name', 'unit.nama as unit_name')->first();
 
         Mail::to($user->email)->send(new RegisAdminUnitMailable($user->name, $user->unit_name));
 

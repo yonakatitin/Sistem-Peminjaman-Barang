@@ -302,7 +302,7 @@ class PeminjamanController extends Controller
         $status = $request->input('status');
 
         // Mengambil data peminjaman sesuai dengan user_id yang sedang login
-        $query = Peminjaman::select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'unit.nama AS nama_unit')
+        $query = Peminjaman::select('peminjaman.*', 'barang.nama_barang AS nama_barang', 'barang.serial_number AS serial_number', 'unit.nama AS nama_unit')
             ->join('barang', 'peminjaman.barang_id', '=', 'barang.id')
             ->join('unit', 'barang.unit_id', '=', 'unit.id')
             ->where('peminjaman.user_id', $userId);

@@ -139,7 +139,7 @@
               <!-- COPY -->
               <tr>
                 <td bgcolor="#ffffff" align="left" style="padding: 40px 30px 20px 30px; color: #666666; font-family: 'Lato', Helvetica, Arial, sans-serif; font-size: 18px; font-weight: 400; line-height: 25px;" >
-                  <p style="margin: 0;">Halo, {{ $name }}! Anda telah menjadi bagian dari <b>Sistem Peminjaman Barang</b>. Selamat, Anda telah menjadi admin unit dari <b>{{ $nama_unit }}</b></p>
+                  <p style="margin: 0;">Halo, {{ $name }}! Anda telah menjadi bagian dari <b>Sistem Peminjaman Barang</b>. Selamat, Anda telah menjadi admin unit dari <b>{{ $unit_name }}</b></p>
                 </td>
               </tr>
               <tr>

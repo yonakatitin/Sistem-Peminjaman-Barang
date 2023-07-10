@@ -9,23 +9,69 @@ class AutoFill extends Seeder
 {
     public function run()
     {
-        $units = [ [
-            'nama' => 'Peminjaman 1',
-            'lokasi' => 'FMIPA'
-        ],
-        [
-            'nama' => 'Peminjaman 2',
-            'lokasi' => 'FK'
-        ],
-        [
-            'nama' => 'Peminjaman 3',
-            'lokasi' => 'FEB'
-        ],
-        [
-            'nama' => 'Peminjaman 4',
-            'lokasi' => 'FT'
-        ]
+        $units = [
+            [
+               'nama'=>'FATISDA',
+               'lokasi'=>'Fakultas Teknologi Informasi dan Sains Data',
+            ],
+            [
+               'nama'=>'FIB',
+               'lokasi'=>'Fakultas Ilmu Budaya',
+            ],
+            [
+               'nama'=>'FH',
+               'lokasi'=>'Fakultas Hukum',
+            ],
+            [
+               'nama'=>'FEB',
+               'lokasi'=>'Fakultas Ekonomi dan Bisnis',
+            ],
+            [
+               'nama'=>'FISIP',
+               'lokasi'=>'Fakultas Ilmu Sosial dan Politik',
+            ],
+            [
+               'nama'=>'FK',
+               'lokasi'=>'Fakultas Kedokteran',
+            ],
+            [
+               'nama'=>'FP',
+               'lokasi'=>'Fakultas Pertanian',
+            ],
+            [
+               'nama'=>'FT',
+               'lokasi'=>'Fakultas Teknik',
+            ],
+            [
+               'nama'=>'FKIP',
+               'lokasi'=>'Fakultas Keguruan dan Ilmu Pendidikan',
+            ],
+            [
+               'nama'=>'FMIPA',
+               'lokasi'=>'Fakultas Matematika dan Ilmu Pengetahuan Alam',
+            ],
+            [
+               'nama'=>'FSRD',
+               'lokasi'=>'Fakultas Seni Rupa dan Desain',
+            ],
+            [
+               'nama'=>'FKOR',
+               'lokasi'=>'Fakultas Keolahragaan',
+            ],
+            [
+               'nama'=>'FAPSI',
+               'lokasi'=>'Fakultas Psikologi',
+            ],
+            [
+               'nama'=>'SV',
+               'lokasi'=>'Sekolah Vokasi',
+            ],
+            [
+               'nama'=>'Pascasarjana',
+               'lokasi'=>'',
+            ],
         ];
+    
 
         foreach ($units as $unit) {
             DB::table('unit')->insert($unit);

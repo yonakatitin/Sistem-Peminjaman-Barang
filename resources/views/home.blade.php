@@ -27,7 +27,7 @@
                             <h2>Cari Barang</h2>
                             <div class="form-group">
                                 <label for="nama_barang" class="label">Nama Barang</label>
-                                <input type="text" name="nama_barang" id="nama_barang" class="form-control" placeholder="Proyektor, Sound, Speaker, etc">
+                                <input type="text" name="nama_barang" id="nama_barang" class="form-control" placeholder="LCD, Monitor, Router, etc">
                             </div>
                             <div class="d-flex">
                                 <div class="form-group mr-2">
@@ -88,7 +88,7 @@
                         @if ($item->detailbarang)
                             <p class="d-flex mb-0 d-block"><a href="{{ route('barang.show', $item->detailbarang->id) }}" class="btn btn-secondary py-2 mr-1">Detail</a>
                         @else
-                        <p class="d-flex mb-0 d-block"><a role="link" aria-disabled="true" disabled class="btn btn-secondary py-2 mr-1">Detail</a>
+                            <p class="d-flex mb-0 d-block"><a role="link" aria-disabled="true" disabled class="btn btn-secondary py-2 mr-1">Detail</a>
                         @endif
                         <a href="{{ route('pinjam.create', ['barang' => $item->id]) }}" class="btn btn-primary py-2 mr-1">Pinjam</a></p>
                     </div>

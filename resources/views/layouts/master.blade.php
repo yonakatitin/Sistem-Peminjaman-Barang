@@ -52,18 +52,33 @@
                     </li>
                 @endif
             @else
-  	          <li class="nav-item active"><a href="{{ route('home') }}" class="nav-link">Home</a></li>
-  	          <li class="nav-item"><a href="{{ route('units.index') }}" class="nav-link">Unit</a></li>
-  	          <li class="nav-item"><a href="{{ route('pinjam.index') }}" class="nav-link">Data Peminjaman</a></li>
-  	          <li class="nav-item dropdown">
+  	          <li class="nav-item {{Request::path() == 'home' ? 'nav-item active' : ''}}">
+                <a class="nav-link" href="/home">Home</a>
+              </li>
+
+  	          <li class="nav-item {{Request::path() == 'units' ? 'active' : ''}}">
+                <a class="nav-link" href="/units">Unit</a>
+              </li>
+
+              <li class="nav-item {{Request::path() == 'pinjam' ? 'active' : ''}}">
+                <a class="nav-link" href="/pinjam">Data Peminjaman</a>
+              </li>
+  	          
+  	          <li class="nav-item dropdown {{Request::path() == 'profile/edit' ? 'active' : ''}} {{Request::path() == 'profile/change-password' ? 'active' : ''}}">
                   <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                       {{ Auth::user()->name }}
                   </a>
 
                   <ul class="dropdown-menu">
                       <li>
-                          <a class="dropdown-item" href="{{ route('profile.edit') }}" class="nav-link">
+                          <a class="dropdown-item" href="/profile/edit" class="nav-link">
                               {{ __('Edit Profil') }}
+                          </a>
+                      </li>
+
+                      <li>
+                          <a class="dropdown-item" href="/profile/change-password" class="nav-link">
+                              {{ __('Ganti Password') }}
                           </a>
                       </li>
                       

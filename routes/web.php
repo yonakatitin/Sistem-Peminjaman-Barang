@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PeminjamanController;
 use App\Models\Barang;
@@ -64,8 +65,11 @@ Route::middleware(['auth', 'user-access:user'])->group(function () {
 
     Route::post('/search', [HomeController::class, 'searchBarang'])->name('search');
 
-    Route::get('/profile/edit', [UsersController::class, 'edit'])->name('profile.edit');
-    Route::put('/profile/update', [UsersController::class, 'update'])->name('profile.update');
+    Route::get('/profile/edit', [UserController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile/update', [UserController::class, 'update'])->name('profile.update');
+
+    Route::get('/profile/change-password', 'App\Http\Controllers\UserController@change_password')->name('profile.change-password');
+    Route::post('/profile/change-password', 'App\Http\Controllers\UserController@update_password')->name('profile.update-password');
 });
 
 Route::middleware(['auth', 'user-access:adminunit'])->group(function () {
